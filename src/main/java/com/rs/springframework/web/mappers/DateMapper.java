@@ -1,4 +1,4 @@
-package com.rs.springframework.web.mapper;
+package com.rs.springframework.web.mappers;
 
 import org.springframework.stereotype.Component;
 

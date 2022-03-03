@@ -1,7 +1,7 @@
 package com.rs.springframework.web.controller;
 
 import com.rs.springframework.repositories.BeerRepository;
-import com.rs.springframework.web.mapper.BeerMapper;
+import com.rs.springframework.web.mappers.BeerMapper;
 import com.rs.springframework.web.model.BeerDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
