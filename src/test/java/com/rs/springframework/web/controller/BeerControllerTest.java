@@ -28,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 //import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.mockito.BDDMockito.then;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -54,6 +55,17 @@ class BeerControllerTest {
     @MockBean
     BeerRepository beerRepository;
 
+    BeerDto validBeer;
+
+    @BeforeEach
+    public void setup(){
+        validBeer = BeerDto.builder().id(UUID.randomUUID())
+                .beerName("Beer1")
+                .beerStyle(BeerStyleEnum.ALE)
+                .upc(123456789012L)
+                .build();
+
+    }
 
     @Test
     void getBeerById() throws Exception {
@@ -112,13 +124,28 @@ class BeerControllerTest {
 
     @Test
     void updateBeerById() throws Exception {
-        BeerDto beerDto =  getValidBeerDto();
+        BeerDto beerDto =  getValidBeerDtoUpdate();
         String beerDtoJson = objectMapper.writeValueAsString(beerDto);
+
+        ConstrainedFields fields = new ConstrainedFields(BeerDto.class);
 
         mockMvc.perform(put("/api/v1/beer/" + UUID.randomUUID().toString())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(beerDtoJson))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isNoContent())
+                .andDo(
+                        document("v1/beer-update",
+                                requestFields(
+                                        fields.withPath("id").ignored(),
+                                        fields.withPath("version").ignored(),
+                                        fields.withPath("createdDate").ignored(),
+                                        fields.withPath("lastModifiedDate").ignored(),
+                                        fields.withPath("beerName").description("Name of the beer"),
+                                        fields.withPath("beerStyle").description("Style of Beer"),
+                                        fields.withPath("upc").description("Beer UPC").attributes(),
+                                        fields.withPath("price").description("Beer Price"),
+                                        fields.withPath("quantityOnHand").ignored()
+                                )));
     }
 
     BeerDto getValidBeerDto(){
@@ -130,6 +157,17 @@ class BeerControllerTest {
                 .build();
 
     }
+
+    BeerDto getValidBeerDtoUpdate(){
+        return BeerDto.builder()
+                .beerName("Nice Ale")
+                .beerStyle(BeerStyleEnum.ALE)
+                .price(new BigDecimal("19.99"))
+                .upc(123123123123L)
+                .build();
+
+    }
+
 
     private static class ConstrainedFields {
 
