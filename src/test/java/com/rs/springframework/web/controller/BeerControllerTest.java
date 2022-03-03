@@ -39,7 +39,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * created by rs 3/2/2022.
  */
 @ExtendWith(RestDocumentationExtension.class)
-@AutoConfigureRestDocs
+//@AutoConfigureRestDocs
+@AutoConfigureRestDocs(uriScheme = "https", uriHost = "com.rs.springframework.restdocs", uriPort = 81)
 @WebMvcTest(BeerController.class)
 @ComponentScan(basePackages = "com.rs.springframework.web.mappers")
 class BeerControllerTest {
